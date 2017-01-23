@@ -27,7 +27,7 @@ defmodule UaaJWT.JWK do
       true  ->
         case JOSE.JWK.from_pem_file(file_name) do
           %JOSE.JWK{} = jwk -> {:ok, jwk};
-          other             -> {:error, :invalid_pem_file}
+          _other            -> {:error, :invalid_pem_file}
         end
     end
   end
@@ -38,7 +38,7 @@ defmodule UaaJWT.JWK do
   end
 
   defp fix_alg(%{"alg" => alg} = key) do
-    case uaa_algs[alg] do
+    case uaa_algs()[alg] do
       nil -> key;
       val -> %{key | "alg" => val}
     end
