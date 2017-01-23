@@ -14,11 +14,10 @@ defmodule UaaJWT do
 
   @spec decode_and_verify(String.t) :: {true, Map.t} | {false, Map.t} | {:error, term()}
   def decode_and_verify(token) do
-    case UaaJWT.JWT.get_key_id(token) do
-      {:ok, key_id}     ->
-        jwk = get_jwk(key_id)
-        UaaJWT.JWT.decode_and_verify(token, jwk);
-      {:error, _} = err -> err
+    with {:ok, key_id} <- UaaJWT.JWT.get_key_id(token),
+         {:ok, jwk} <- get_jwk(key_id)
+    do
+         UaaJWT.JWT.decode_and_verify(token, jwk)
     end
   end
 
