@@ -28,8 +28,7 @@ defmodule Jwt.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:jose, "~> 1.8"},
-      {:jsx, "~> 2.8"}
+      {:jose, "~> 1.8"}
     ]
   end
 end
