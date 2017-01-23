@@ -14,7 +14,7 @@ defmodule Jwt.Mixfile do
   #
   # Type "mix help compile.app" for more information
   def application do
-    [applications: [:logger, :jose]]
+    [applications: [:jose]]
   end
 
   # Dependencies can be Hex packages:
