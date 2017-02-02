@@ -15,7 +15,7 @@ defmodule UaaJWT do
   @spec decode_and_verify(String.t) :: {true, Map.t} | {false, Map.t} | {:error, term()}
   def decode_and_verify(token) do
     with {:ok, key_id} <- UaaJWT.JWT.get_key_id(token),
-         {:ok, jwk} <- get_jwk(key_id)
+         {:ok, jwk}    <- get_jwk(key_id)
     do
          UaaJWT.JWT.decode_and_verify(token, jwk)
     end

@@ -1,6 +1,6 @@
 # UAA JWT decoder
 
-This library can decode [JSON Web Tokens](https://tools.ietf.org/html/rfc7519) 
+This library can decode [JSON Web Tokens](https://tools.ietf.org/html/rfc7519)
 returned by [Cloud Foundry UAA](https://github.com/cloudfoundry/uaa).
 
 The tokens are issued by UAA to [OAuth 2 resource servers](https://tools.ietf.org/html/rfc6749#section-1.1)
@@ -108,6 +108,24 @@ add_signing_key("key1", :map, %{"kty" => "oct", "k" => "bXlfa2V5"})
 
 This function will try to validate a key and add it to `signing_key`
 application environemnt.
+
+If a JWK token doesn't contain a `kid` field, "default" key will be used.
+Default key can be selected by using `defeult_key` environment variable.
+
+For example, if we want to make `key1` a default key:
+
+Elixir:
+```
+config :uaa_jwt, default_key: "key1"
+```
+
+Erlang:
+```
+[{uaa_jwt, [{default_key, <<"key1">>}, ...]}]
+```
+
+By default, default key value is `"default"`
+
 
 ### Decoding
 

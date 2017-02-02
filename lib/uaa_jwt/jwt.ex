@@ -22,7 +22,11 @@ defmodule UaaJWT.JWT do
     try do
       case JOSE.JWT.peek_protected(token) do
         %JOSE.JWS{fields: %{"kid" => kid}} -> {:ok, kid};
-        _                                  -> {:error, :no_key}
+        _                                  ->
+          case Application.get_env(:uaa_jwt, :default_key) do
+            nil -> {:error, :no_key};
+            val -> {:ok, val}
+          end
       end
     rescue
       ArgumentError -> {:error, :invalid_token}
