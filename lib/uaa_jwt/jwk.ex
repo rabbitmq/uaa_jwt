@@ -6,17 +6,27 @@ defmodule UaaJWT.JWK do
     make_jwk(json_map)
   end
   def make_jwk(json_map) when is_map(json_map) do
-    {:jwk, {:kty, supported_kty}, _} = :lists.keyfind(:jwk, 1, JOSE.JWA.supports)
     case json_map do
       %{"kty" => "MAC", "value" => _value} ->
         {:ok, mac_to_oct(json_map)};
       %{"kty" => "RSA", "n" => _n, "e" => _e} ->
         {:ok, fix_alg(json_map)};
-      %{"kty" => kty} ->
-        case Enum.member?(supported_kty, kty) do
-          true  -> {:ok, fix_alg(json_map)};
-          false -> {:error, :unknown_kty}
-        end
+      %{"kty" => "oct", "k" => _k} ->
+        {:ok, fix_alg(json_map)};
+      %{"kty" => "OKP", "crv" => _crv, "x" => _x} ->
+        {:ok, fix_alg(json_map)};
+      %{"kty" => "EC"} ->
+        {:ok, fix_alg(json_map)};
+      %{"kty" => kty} when kty == "oct" or
+                           kty == "MAC" or
+                           kty == "RSA" or
+                           kty == "OKP" or
+                           kty == "EC" ->
+        {:error, {:fields_missing_for_kty, kty}};
+      %{"kty" => _kty} ->
+        {:error, :unknown_kty};
+      %{} ->
+        {:error, :no_kty}
     end
   end
 
@@ -43,6 +53,7 @@ defmodule UaaJWT.JWK do
       val -> %{key | "alg" => val}
     end
   end
+  defp fix_alg(%{} = key), do: key
 
   defp uaa_algs do
     Application.get_env(:uaa_jwt_decoder, :uaa_algs,

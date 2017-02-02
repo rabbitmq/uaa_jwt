@@ -45,8 +45,12 @@ defmodule UaaJWT do
       _     -> {:error, :unknown_signing_key_type}
     end
     case verified do
-      {:ok, _} -> :ok
-      error    -> error
+      {:ok, key} ->
+        case JOSE.JWK.from(key) do
+          %JOSE.JWK{}      -> :ok
+          {:error, reason} -> {:error, reason}
+        end;
+      error      -> error
     end
   end
 
