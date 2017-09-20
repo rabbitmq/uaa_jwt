@@ -30,6 +30,13 @@ defmodule UaaJWT.JWK do
     end
   end
 
+  def from_pem(pem) do
+    case JOSE.JWK.from_pem(pem) do
+      %JOSE.JWK{} = jwk -> {:ok, jwk};
+      _other            -> {:error, :invalid_pem_string}
+    end
+  end
+
   def from_pem_file(file_name) do
     case File.exists?(file_name) do
       false ->

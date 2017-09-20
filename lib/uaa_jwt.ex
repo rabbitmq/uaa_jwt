@@ -29,20 +29,22 @@ defmodule UaaJWT do
         {:error, :key_not_found};
       {type, value} ->
         case type do
-          :json -> UaaJWT.JWK.make_jwk(value)
-          :pem  -> UaaJWT.JWK.from_pem_file(value)
-          :map  -> {:ok, value}
-          _     -> {:error, :unknown_signing_key_type}
+          :json     -> UaaJWT.JWK.make_jwk(value)
+          :pem      -> UaaJWT.JWK.from_pem(value)
+          :pem_file -> UaaJWT.JWK.from_pem_file(value)
+          :map      -> {:ok, value}
+          _         -> {:error, :unknown_signing_key_type}
         end
     end
   end
 
   def verify_signing_key(type, value) do
     verified = case type do
-      :json -> UaaJWT.JWK.make_jwk(value)
-      :pem  -> UaaJWT.JWK.from_pem_file(value)
-      :map  -> UaaJWT.JWK.make_jwk(value)
-      _     -> {:error, :unknown_signing_key_type}
+      :json     -> UaaJWT.JWK.make_jwk(value)
+      :pem      -> UaaJWT.JWK.from_pem(value)
+      :pem_file -> UaaJWT.JWK.from_pem_file(value)
+      :map      -> UaaJWT.JWK.make_jwk(value)
+      _         -> {:error, :unknown_signing_key_type}
     end
     case verified do
       {:ok, key} ->
