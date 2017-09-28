@@ -32,7 +32,7 @@ defmodule UaaJWT do
           :json     -> UaaJWT.JWK.make_jwk(value)
           :pem      -> UaaJWT.JWK.from_pem(value)
           :pem_file -> UaaJWT.JWK.from_pem_file(value)
-          :map      -> {:ok, value}
+          :map      -> UaaJWT.JWK.make_jwk(value)
           _         -> {:error, :unknown_signing_key_type}
         end
     end
