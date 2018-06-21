@@ -48,43 +48,24 @@ This project provides a workaround to correct (normalize) such values.
 
 The package can be installed as:
 
-  1. Add `uaa_jwt` to your list of dependencies in `mix.exs`:
+  1. Add `uaa_jwt` to your list of dependencies in the `Makefile` for `erlang.mk`:
 
-    ```elixir
-    def deps do
-      [{:uaa_jwt, git: "git://github.com/rabbitmq/uaa_jwt"}]
-    end
-    ```
-
-  2. Ensure `uaa_jwt` is started before your application:
-
-    ```elixir
-    def application do
-      [applications: [:uaa_jwt]]
-    end
-    ```
+```erlang
+DEPS = uaa_jwt
+dep_uaa_jwt = git git://github.com/rabbitmq/uaa_jwt erlang
+```
 
 ## Usage
 
 To verify tokens, you should configure one or many signing keys (JWK).
-You can do that using the application environment or the `UaaJWT.add_signing_key`
+You can do that using the application environment or the `uaa_jwt.add_signing_key`
 function.
 
 ### Configuration
 
 To configure keys using the application environment:
 
-in `config.exs`:
-```
-config :uaa_jwt, signing_keys: %{
-        "key1" => {:map, %{"kty" => "oct", "k" => "dG9rZW5rZXk"}},
-        "key2" => {:pem, "/path/to/public_key.pem"},
-        "legacy-token-key" => {:json, '{"kid":"legacy-token-key","alg":"HMACSHA256","value":"tokenkey","kty":"MAC","use":"sig"}'}
-    }
-
-```
-
-or using erlang-style `.config`:
+or erlang `.config`:
 ```
 [{uaa_jwt, [{signing_keys, #{
     <<"key1">> => {map, #{<<"kty">> => <<"oct">>, <<"k">> => <<"dG9rZW5rZXk">>}},
@@ -98,12 +79,12 @@ This config defines three signing keys.
 
 The first one is a standard `JWK` octet sequence key with `base64url` encoded value for `k`.
 The second one is a filename for RSA public key.
-The third one is a JSON result from a `/token_key` request to UAA. It can be an Elixir char_list or a string.
+The third one is a JSON result from a `/token_key` request to UAA. It should be a binary or a string
 
-To add a key using the `UaaJWT.add_signing_key` function:
+To add a key using the `uaa_jwt:add_signing_key` function:
 
 ```
-add_signing_key("key1", :map, %{"kty" => "oct", "k" => "bXlfa2V5"})
+add_signing_key(<<"key1">>, map, #{<<"kty">> => <<"oct">>, <<"k">> => <<"bXlfa2V5">>}).
 ```
 
 This function will try to validate a key and add it to `signing_key`
@@ -114,25 +95,19 @@ Default key can be selected by using `defeult_key` environment variable.
 
 For example, if we want to make `key1` a default key:
 
-Elixir:
 ```
-config :uaa_jwt, default_key: "key1"
-```
-
-Erlang:
-```
-[{uaa_jwt, [{default_key, <<"key1">>}, ...]}]
+[{uaa_jwt, [{default_key, <<"key1">>}, ...]}].
 ```
 
-By default, default key value is `"default"`
+By default, default key value is `<<"default">>`
 
 
 ### Decoding
 
-After configuring the keys, you can decode a token using the `UaaJWT.decode_and_verify` function:
+After configuring the keys, you can decode a token using the `uaa_jwt:decode_and_verify` function:
 
 ```
-UaaJWT.decode_and_verify(String.t) :: {true | false, Map.t} | {:error, term()}
+uaa_jwt:decode_and_verify(binary()) -> {true | false, map()} | {error, term()}.
 ```
 
 The signing key will be selected according to the `kid` field in
@@ -143,19 +118,19 @@ Following functions can be used for debug purposes:
 To get the `kid` field only from a token:
 
 ```
-UaaJWT.JWT.get_key_id(token)
+uaa_jwt_jwt:get_key_id(Token).
 ```
 
 To decode a token without signature verification:
 
 ```
-UaaJWT.JWT.decode(token)
+uaa_jwt_jwt:decode(Token).
 ```
 
 To validate a `JWK` key (provided as a map or JSON document):
 
 ```
-UaaJWT.JWK.make_jwk(jwk)
+uaa_jwt_jwk.make_jwk(Jwk).
 ```
 
 Please consult [erlang-jose][erlang-jose] dosumentation for more functions and options.
