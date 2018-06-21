@@ -1,6 +1,9 @@
-.PHONY: all
+PROJECT = uaa_jwt
+PROJECT_DESCRIPTION = New project
+PROJECT_VERSION = 0.1.0
 
-MIX = echo y | mix
+DEPS = jose
 
-all:
-	$(MIX) do deps.get, deps.compile, compile
+dep_jose = git git://github.com/potatosalad/erlang-jose.git 1.8.4
+
+include erlang.mk

@@ -1,3 +1,6 @@
 _build/*
 deps/*
 *.ez
+ebin/
+uaa_jwt.d
+.erlang.mk
