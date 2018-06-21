@@ -36,18 +36,22 @@ make_jwk(JsonMap) when is_map(JsonMap) ->
 from_pem(Pem) ->
     case jose_jwk:from_pem(Pem) of
         #jose_jwk{} = Jwk -> {ok, Jwk};
-        Other             -> {error, invalid_pem_string}
+        Other             ->
+            error_logger:warning_msg("Error parsing jwk from pem: ", [Other]),
+            {error, invalid_pem_string}
     end.
 
 from_pem_file(FileName) ->
     case filelib:is_file(FileName) of
-      false ->
-        {error, enoent};
-      true  ->
-        case jose_jwk:from_pem_file(FileName) of
-          #jose_jwk{} = Jwk -> {ok, Jwk};
-          Other             -> {error, invalid_pem_file}
-        end
+        false ->
+            {error, enoent};
+        true  ->
+            case jose_jwk:from_pem_file(FileName) of
+                #jose_jwk{} = Jwk -> {ok, Jwk};
+                Other             ->
+                    error_logger:warning_msg("Error parsing jwk from pem file: ", [Other]),
+                    {error, invalid_pem_file}
+            end
     end.
 
 mac_to_oct(#{<<"kty">> := <<"MAC">>, <<"value">> := Value} = Key) ->
