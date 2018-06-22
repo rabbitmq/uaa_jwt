@@ -71,7 +71,7 @@ or erlang `.config`:
     <<"key1">> => {map, #{<<"kty">> => <<"oct">>, <<"k">> => <<"dG9rZW5rZXk">>}},
     <<"key2">> => {pem, <<"/path/to/public_key.pem">>},
     <<"legacy-token-key">> =>
-    {json, "{\"kid\":\"legacy-token-key\",\"alg\":\"HMACSHA256\",\"value\":\"tokenkey\",\"kty\":\"MAC\",\"use\":\"sig\"}"}
+    {json, "{\"kid\":\"legacy-token-key\",\"alg\":\"HMACSHA256\",\"value\":\"tokenKey\",\"kty\":\"MAC\",\"use\":\"sig\"}"}
 }}]}]
 ```
 
