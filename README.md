@@ -44,6 +44,8 @@ UAA prior to version `3.10.0` returns an invalid `alg` values for a signing key.
 [UAA issue #132796973](https://www.pivotaltracker.com/n/projects/997278/stories/132796973)
 This project provides a workaround to correct (normalize) such values.
 
+**It is not recommended to use this library with UUA version prior to `3.10.0`**
+
 ## Installation
 
 The package can be installed as:
@@ -71,7 +73,7 @@ or erlang `.config`:
     <<"key1">> => {map, #{<<"kty">> => <<"oct">>, <<"k">> => <<"dG9rZW5rZXk">>}},
     <<"key2">> => {pem, <<"/path/to/public_key.pem">>},
     <<"legacy-token-key">> =>
-    {json, "{\"kid\":\"legacy-token-key\",\"alg\":\"HMACSHA256\",\"value\":\"tokenKey\",\"kty\":\"MAC\",\"use\":\"sig\"}"}
+    {json, "{\"kid\":\"legacy-token-key\",\"alg\":\"HS256\",\"value\":\"tokenKey\",\"kty\":\"MAC\",\"use\":\"sig\"}"}
 }}]}]
 ```
 
@@ -84,7 +86,7 @@ The third one is a JSON result from a `/token_key` request to UAA. It should be 
 To add a key using the `uaa_jwt:add_signing_key` function:
 
 ```
-add_signing_key(<<"key1">>, map, #{<<"kty">> => <<"oct">>, <<"k">> => <<"bXlfa2V5">>}).
+uaa_jwt:add_signing_key(<<"key1">>, map, #{<<"kty">> => <<"oct">>, <<"k">> => <<"bXlfa2V5">>}).
 ```
 
 This function will try to validate a key and add it to `signing_key`
@@ -101,6 +103,29 @@ For example, if we want to make `key1` a default key:
 
 By default, default key value is `<<"default">>`
 
+### Running with demo UAA
+
+If not configured, UAA server will use a `MAC` symmtric key with a `tokenKey` value by default.
+To configure this plugin to decode tokens from unconfigured UAA, you should add this key to the configuration:
+
+```
+[{uaa_jwt, [{signing_keys, #{
+    <<"legacy-token-key">> =>
+        {map, #{<<"alg">> => <<"HS256">>,
+                <<"value">> => <<"tokenKey">>,
+                <<"kty">> => <<"MAC">>,
+                <<"use">> => <<"sig">>}}
+}}]}].
+```
+
+Or you can add it dynamically:
+
+```
+uaa_jwt:add_signing_key(<<"legacy-token-key">>, map, #{<<"alg">> => <<"HS256">>,
+                                                       <<"value">> => <<"tokenKey">>,
+                                                       <<"kty">> => <<"MAC">>,
+                                                       <<"use">> => <<"sig">>}).
+```
 
 ### Decoding
 
