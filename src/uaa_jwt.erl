@@ -1,6 +1,7 @@
 -module(uaa_jwt).
 
 -export([add_signing_key/3,
+         remove_signing_key/1,
          decode_and_verify/1,
          get_jwk/1,
          verify_signing_key/2,
@@ -21,6 +22,10 @@ add_signing_key(KeyId, Type, Value) ->
         {error, _} = Err ->
             Err
     end.
+
+remove_signing_key(KeyId) ->
+    Keys = application:get_env(uaa_jwt, signing_keys, #{}),
+    application:set_env(uaa_jwt, signing_keys, maps:remove(KeyId, Keys)).
 
 
 -spec decode_and_verify(binary()) -> {boolean(), map()} | {error, term()}.
