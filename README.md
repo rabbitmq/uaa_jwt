@@ -6,6 +6,16 @@ returned by [Cloud Foundry UAA](https://github.com/cloudfoundry/uaa).
 The tokens are issued by UAA to [OAuth 2 resource servers](https://tools.ietf.org/html/rfc6749#section-1.1)
 and a resource server can decode and verify the tokens to authorize access to its resources.
 
+## Erlang and Elixir versions of the library
+
+This library was switched to pure Erlang version. You can still use it from Elixir, but will have
+to change module names from `UaaJWT`, `UaaJWT.JWT` and `UaaJWT.JWK`
+to `uaa_jwt`, `uaa_jwt_jwt` and `uaa_jwt_jwk` respectively.
+
+To use elixir version of this library, please use the `elixir` tag.
+
+The elixir version is not maintained anymore, sorry.
+
 ## Dependencies
 
 The project is based on a number of dependencies:
