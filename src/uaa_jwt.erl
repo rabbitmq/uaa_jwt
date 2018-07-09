@@ -7,6 +7,8 @@
          verify_signing_key/2,
          signing_keys/0]).
 
+-export([client_id/1, sub/1, client_id/2, sub/2]).
+
 -include_lib("jose/include/jose_jwk.hrl").
 
 
@@ -78,3 +80,20 @@ verify_signing_key(Type, Value) ->
 
 signing_keys() ->
     application:get_env(uaa_jwt, signing_keys, #{}).
+
+
+-spec client_id(map()) -> binary() | undefined.
+client_id(DecodedToken) ->
+    maps:get(<<"client_id">>, DecodedToken, undefined).
+
+-spec client_id(map(), any()) -> binary() | undefined.
+client_id(DecodedToken, Default) ->
+    maps:get(<<"client_id">>, DecodedToken, Default).
+
+-spec sub(map()) -> binary() | undefined.
+sub(DecodedToken) ->
+    maps:get(<<"sub">>, DecodedToken, undefined).
+
+-spec sub(map(), any()) -> binary() | undefined.
+sub(DecodedToken, Default) ->
+    maps:get(<<"sub">>, DecodedToken, Default).
