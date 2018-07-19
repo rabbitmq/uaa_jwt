@@ -1,4 +1,10 @@
-# UAA JWT decoder
+# UAA JWT Decoder
+
+## Project Status
+
+This library has been folded into the [RabbitMQ OAuth 2/JWT plugin](https://github.com/rabbitmq/rabbitmq-auth-backend-uaa) plugin.
+
+## Overview
 
 This library can decode [JSON Web Tokens](https://tools.ietf.org/html/rfc7519)
 returned by [Cloud Foundry UAA](https://github.com/cloudfoundry/uaa).
